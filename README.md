@@ -92,7 +92,7 @@ This Expert Advisor (EA) is designed for automated trading in the Forex market u
 ---
 
 ## Support
-For updates and support, join the Telegram channel: [https://t.me/free_fx_pro](https://t.me/free_fx_pro).
+For updates and support, join the Telegram channel: [https://t.me/zeenotjee](https://t.me/zeenotjee).
 
 ---
 
