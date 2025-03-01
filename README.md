@@ -1,91 +1,99 @@
-**Dokumentasi Expert Advisor (EA) "Pirate" untuk Forex Market**
+# Expert Advisor (EA) Documentation: Pirate
 
-### **Gambaran Umum**
-EA "Pirate" dirancang untuk trading otomatis di platform MetaTrader 4 (MT4) dengan fokus pada pasangan mata uang tertentu. EA ini menggunakan manajemen risiko, kontrol spread, dan waktu trading untuk memaksimalkan potensi profit.
-
----
-
-### **Fitur Utama**
-1. **Manajemen Risiko Otomatis**  
-   - Menghitung lot berdasarkan persentase risiko dan ekuitas akun.
-   - Opsi menggunakan lot tetap atau dinamis.
-
-2. **Kontrol Waktu Trading**  
-   - Hanya beroperasi dalam jam yang ditentukan (`StartHour` hingga `StopHour`).
-
-3. **Filter Spread**  
-   - Membatalkan order jika spread melebihi batas yang diizinkan (`MaxSpreadOpen`).
-
-4. **Strategi Berbasis Indikator**  
-   - Menggunakan RSI (Relative Strength Index) dan Moving Average (MA) untuk sinyal entry/exit.
-
-5. **Take Profit & Stop Loss Dinamis**  
-   - Menyesuaikan level TP/SL berdasarkan kondisi pasar.
-
-6. **Multi-Bahasa**  
-   - Mendukung notifikasi dalam bahasa Rusia dan Inggris.
+## Overview
+This Expert Advisor (EA) is designed for automated trading in the Forex market using MetaTrader 4 (MT4). It incorporates risk management, time-based trading, and technical indicators (RSI and Moving Average) for decision-making. Below is the documentation to help you understand and use the EA effectively.
 
 ---
 
-### **Instalasi**
-1. Salin file `.ex4` ke folder:  
-   `...\MT4\MQL4\Experts`
-2. Restart MT4 atau refresh Navigator.
-3. Tempelkan EA ke chart pasangan yang direkomendasikan:
-   - CHFJPY, EURCHF, EURAUD, USDCHF, USDCAD.
+## Features
+- **Money Management**: Adjusts lot size based on account balance and risk percentage.
+- **Time-Based Trading**: Operates within user-defined hours.
+- **Technical Strategies**: Uses RSI and Moving Average for trade signals.
+- **Spread Control**: Avoids trading during high spreads.
+- **Multi-Currency Support**: Optimized for CHFJPY, EURCHF, EURAUD, USDCHF, USDCAD.
+- **Risk Controls**: Stop Loss, Take Profit, and Trailing Stop options.
 
 ---
 
-### **Parameter Input**
-| Parameter | Deskripsi | Contoh Nilai |
-|-----------|-----------|--------------|
-| **Money Management** |
-| `MoneyManagement` | Aktifkan manajemen risiko | `true`/`false` |
-| `Risk` | Persentase risiko per trade | `3` (3%) |
-| `OriginalLot` | Lot tetap (jika MoneyManagement=false) | `0.1` |
-| **Order Settings** |
-| `CountBuy` | Jumlah maksimal order BUY | `1` |
-| `CountSell` | Jumlah maksimal order SELL | `1` |
-| `TakeProfit` | Target profit (dalam points) | `20` |
-| `StopLoss` | Batas rugi (dalam points) | `35` |
-| **Time Settings** |
-| `StartHour` | Jam mulai trading (0-23) | `0` (00:00) |
-| `StopHour` | Jam berhenti trading (0-23) | `1` (01:00) |
-| **Advanced** |
-| `MaxSpreadOpen` | Spread maksimal untuk open order | `30` points |
-| `TakeProfitClose` | Auto-close saat profit mencapai X points | `5` |
+## Installation
+1. **Copy Files**:
+   - Place `Pirate.mq4` in the `MT4/MQL4/Experts/` directory.
+   - Ensure sound files (`GOOD.wav`, `Monkey.wav`, etc.) are in `MT4/Sounds/`.
+
+2. **Compile**:
+   - Open MT4, navigate to **Navigator > Experts**, right-click `Pirate.mq4`, and select **Compile**.
+
+3. **Attach to Chart**:
+   - Drag the EA onto a chart of a supported currency pair.
 
 ---
 
-### **Catatan Penting**
-1. **Magic Number**  
-   EA menggunakan `181818` sebagai ID order. Pastikan tidak ada konflik dengan EA lain.
+## Configuration (Input Parameters)
 
-2. **Dependensi**  
-   - Pastikan terminal mengizinkan trading otomatis (AutoTrading enabled).
-   - Gunakan akun dengan leverage minimal 1:100.
+### Money Management
+| Parameter           | Description                                                                 | Default Value |
+|---------------------|-----------------------------------------------------------------------------|---------------|
+| `MoneyManagement`   | Enable dynamic lot sizing based on risk.                                    | `true`        |
+| `Risk`              | Risk percentage per trade (e.g., 3 = 3% of balance).                       | `3`           |
+| `OriginalLot`       | Fixed lot size if `MoneyManagement` is disabled.                           | `0.1`         |
 
-3. **Rekomendasi**  
-   - Backtest di data historis sebelum digunakan live.
-   - Monitor performa saat pertama kali dijalankan.
+### Trade Settings
+| Parameter           | Description                                                                 | Default Value |
+|---------------------|-----------------------------------------------------------------------------|---------------|
+| `CountBuy`          | Maximum simultaneous buy orders. Use `-1` for unlimited.                   | `1`           |
+| `CountSell`         | Maximum simultaneous sell orders. Use `-1` for unlimited.                  | `1`           |
+| `TakeProfitClose`   | Close trades when profit reaches X pips.                                   | `5`           |
+| `StopLoss`          | Stop Loss in pips.                                                         | `35`          |
+| `TakeProfit`        | Take Profit in pips.                                                       | `20`          |
+| `MaxSpreadOpen`     | Maximum allowed spread (in pips) to open a trade.                          | `30`          |
+
+### Trading Hours
+| Parameter           | Description                                                                 | Default Value |
+|---------------------|-----------------------------------------------------------------------------|---------------|
+| `StartHour`         | Start trading hour (0-23, server time).                                    | `0` (Midnight)|
+| `StopHour`          | Stop trading hour (0-23, server time).                                     | `1` (1 AM)    |
+
+### Display
+| Parameter           | Description                                                                 | Default Value |
+|---------------------|-----------------------------------------------------------------------------|---------------|
+| `DisplayTable`      | Show info panel on the chart.                                              | `false`       |
 
 ---
 
-### **Pemecahan Masalah**
-- **Error 133**: Trading tidak diizinkan. Periksa:
-  - Apakah akun terhubung ke server trading.
-  - Apakah simbol diperbolehkan untuk trading.
-- **Spread Melebar**: EA akan menunda order sampai spread normal.
+## Strategy Details
+### Entry Conditions
+- **Buy Signal**:
+  - RSI (14-period) < 30 and RSI (1-period) < 36.
+  - Price above Moving Average (8-period, Median Price).
+- **Sell Signal**:
+  - RSI (14-period) > 70 and RSI (1-period) > 64.
+  - Price below Moving Average (8-period, Median Price).
+
+### Exit Conditions
+- **Take Profit**: Closes at `TakeProfit` pips.
+- **Stop Loss**: Triggers at `StopLoss` pips.
+- **Time-Based Close**: Closes trades that exceed predefined idle times.
 
 ---
 
-### **Lisensi**
-Kode ini bersifat open-source dan gratis. Namun, tanggung jawab penggunaan sepenuhnya ada pada pengguna.
-
-⚠️ **Disclaimer**: Trading forex mengandung risiko tinggi. Hasil sebelumnya tidak menjamin kinerja masa depan.
+## Important Notes
+- **Magic Number**: `181818` – Unique identifier for EA-managed trades.
+- **Sound Alerts**: Requires `.wav` files in `MT4/Sounds/`.
+- **Server Time**: EA uses broker/server time for trading hours.
+- **Spread Protection**: Avoids trades if spread exceeds `MaxSpreadOpen`.
 
 ---
 
-**Link Support**: [Telegram Channel](https://t.me/zeenotjee)  
-**Versi Terbaru**: 1.20  
-**Kompatibilitas**: MetaTrader 4
+## Disclaimer
+- This EA is provided "as is" with no warranties. Use at your own risk.
+- Forex trading involves substantial risk; test thoroughly in a demo account before live use.
+- The developers are not responsible for financial losses.
+
+---
+
+## Support
+For updates and support, join the Telegram channel: [https://t.me/free_fx_pro](https://t.me/free_fx_pro).
+
+---
+
+**Note**: The code contains obfuscated variables (e.g., `总_1_bo`). For clarity, refer to the input parameters listed above.
